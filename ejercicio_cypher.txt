@@ -1,0 +1,33 @@
+# Autora: Alicia Pérez Jiménez
+# Máster Big Data Science 2015
+#
+######################################
+# EJERCICIO 1
+# La lista de los 100 directores que más películas han dirigido. 
+# La lista debe aparecer ordenada por nombre y por cada director la cantidad de películas, como se muestra a continuación:
+
+MATCH (d)-[:DIRECTED]->(m) 
+with d, count(m) AS c
+order by c desc
+limit 100 
+return d.name, c
+order by d.name asc
+
+######################################
+# EJERCICIO 2
+# Obtenga los títulos de todas las películas que incluyan en el reparto a Robert De Niro y Al Pacino.
+
+MATCH (a1)-[:ACTS_IN]->(m)<-[:ACTS_IN]-(a2) 
+WHERE a1.name = 'Robert De Niro' AND a2.name = 'Al Pacino'
+return m.title as Peliculas
+
+######################################
+# EJERCICIO 3
+# Determine si alguno de los directores de las películas recuperadas en la pregunta 2 ha dirigido también a Jamie Foxx y en cuáles películas.
+
+MATCH (a1)-[:ACTS_IN]->(m)<-[:ACTS_IN]-(a2) 
+WHERE a1.name = 'Robert De Niro' AND a2.name = 'Al Pacino'
+WITH m
+MATCH (m)<-[:DIRECTED]-(d)-[:DIRECTED]->(om)<-[:ACTS_IN]-(a3)
+WHERE a3.name = 'Jamie Foxx'
+return d.name as Director, om.title as Pelicula
